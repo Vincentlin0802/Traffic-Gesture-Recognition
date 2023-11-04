@@ -11,13 +11,25 @@ from data_augmentation import *
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
-data_path = './gesture_data'
-train_frame_path = './image_skeleton_data/train_frames_data.pkl'
-test_frame_path = './image_skeleton_data/test_frames_data.pkl'
-train_skeleton_path ='./image_skeleton_data/train_skeleton_data.pkl'
-test_skeleton_path ='./image_skeleton_data/test_skeleton_data.pkl'
-train_skeleton_aument_path ='./image_skeleton_data/train_skeleton_aument.pkl'
-save_model_path = './rnn_model'
+
+#relative path of the files
+relative_data_path = 'gesture_data' #if can't find this, remember to download the dataset from the google drive that mentioned in README.md
+relative_save_model_path = 'rnn_model'
+relative_train_frame_path = os.path.join('image_skeleton_data', 'train_frames_data.pkl')
+relative_test_frame_path = os.path.join('image_skeleton_data', 'test_frames_data.pkl')
+relative_train_skeleton_path = os.path.join('image_skeleton_data', 'train_skeleton_data.pkl')
+relative_test_skeleton_path = os.path.join('image_skeleton_data', 'test_skeleton_data.pkl')
+relative_train_skeleton_augment_path = os.path.join('image_skeleton_data', 'train_skeleton_augment.pkl')
+
+# get absolute path from personal system
+absolute_data_path = os.path.abspath(relative_data_path)
+absolute_save_model_path = os.path.abspath(relative_save_model_path)
+absolute_train_frame_path = os.path.abspath(relative_train_frame_path)
+absolute_test_frame_path = os.path.abspath(relative_test_frame_path)
+absolute_train_skeleton_path = os.path.abspath(relative_train_skeleton_path)
+absolute_test_skeleton_path = os.path.abspath(relative_test_skeleton_path)
+absolute_train_skeleton_augment_path = os.path.abspath(relative_train_skeleton_augment_path)
+
 
 # RNN architecture
 RNN_hidden_layers = 2
@@ -36,36 +48,36 @@ learning_rate = 1e-3
 use_cuda = torch.cuda.is_available()                   # check if GPU exists
 device = torch.device("cuda" if use_cuda else "cpu")   # use CPU or GPU
 
-train_list, test_list, train_label, test_label = SkeletonDataset.preprocess_data(data_path)
+train_list, test_list, train_label, test_label = SkeletonDataset.preprocess_data(absolute_data_path)
 
 #get image weight,height, RGB information from train and test list
-train_image = ImageProcessor(data_path, train_list)
-test_image = ImageProcessor(data_path, test_list)
+train_image = ImageProcessor(absolute_data_path, train_list)
+test_image = ImageProcessor(absolute_data_path, test_list)
 
 # check if file exist or not, if not exist, run these code
-if not os.path.exists(train_frame_path):
-    train_image.save_image_frames(train_frame_path)
-if not os.path.exists(test_frame_path):
-    test_image.save_image_frames(test_frame_path)
+if not os.path.exists(absolute_train_frame_path):
+    train_image.save_image_frames(absolute_train_frame_path)
+if not os.path.exists(absolute_test_frame_path):
+    test_image.save_image_frames(absolute_test_frame_path)
 
-train_frames = train_image.load_image_frames(train_frame_path)
-test_frames = test_image.load_image_frames(test_frame_path)
+train_frames = train_image.load_image_frames(absolute_train_frame_path)
+test_frames = test_image.load_image_frames(absolute_test_frame_path)
 
 #process skeleton data from train and test image frames
 train_skeleton = SkeletonProcessor(train_frames)
 test_skeleton = SkeletonProcessor(test_frames)
-if not os.path.exists(train_skeleton_path):
-    train_skeleton.save_image_skeleton(train_skeleton_path)
-if not os.path.exists(test_skeleton_path):
-    test_skeleton.save_image_skeleton(test_skeleton_path)
+if not os.path.exists(absolute_train_skeleton_path):
+    train_skeleton.save_image_skeleton(absolute_train_skeleton_path)
+if not os.path.exists(absolute_test_skeleton_path):
+    test_skeleton.save_image_skeleton(absolute_test_skeleton_path)
 
 
-augmenter = DataAugmenter(train_skeleton_path,train_skeleton_aument_path,augment_ratio=0.3)
-if not os.path.exists(train_skeleton_aument_path):
+augmenter = DataAugmenter(absolute_train_skeleton_path,absolute_train_skeleton_augment_path,augment_ratio=0.3)
+if not os.path.exists(absolute_train_skeleton_augment_path):
     augmented_sequence = augmenter.save_augment_skeleton()
 
 
-skeleton_dataset = SkeletonDataset(train_skeleton_aument_path, test_skeleton_path, train_label, test_label, batch_size=10)
+skeleton_dataset = SkeletonDataset(absolute_train_skeleton_augment_path, absolute_test_skeleton_path, train_label, test_label, batch_size=10)
 
 
 # set and initialize RNN model parameters for training
@@ -90,7 +102,7 @@ trainer = RNNTrainer(
     train_loader=skeleton_dataset.train_loader, 
     test_loader=skeleton_dataset.test_loader, 
     optimizer=optimizer, 
-    save_model_path=save_model_path,
+    save_model_path=absolute_save_model_path,
     total_epochs = epochs
 )
 
@@ -141,7 +153,7 @@ plt.title("training scores")
 plt.xlabel('epochs')
 plt.ylabel('accuracy')
 plt.legend(['train', 'test'], loc="upper left")
-title = os.path.join(save_model_path, "fig_RNN_train.png")
+title = os.path.join(absolute_save_model_path, "fig_RNN_train.png")
 plt.savefig(title, dpi=600)
 # plt.close(fig)
 plt.show()
@@ -164,7 +176,7 @@ report_visualize  = report_visualize.drop(['accuracy', 'macro avg', 'weighted av
 plt.figure(figsize=(10, 5))
 sns.heatmap(report_visualize[['precision', 'recall', 'f1-score']], annot=True, cmap='Blues')
 plt.title('Classification Report Heatmap')
-title = os.path.join(save_model_path, "fig_RNN_classification_report.png")
+title = os.path.join(absolute_save_model_path, "fig_RNN_classification_report.png")
 plt.savefig(title, dpi=300, bbox_inches='tight')
 plt.show()
 print("best loss: ", best_loss)

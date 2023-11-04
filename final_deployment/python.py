@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import cv2
+import os
 import mediapipe as mp
 import numpy as np
 import io
@@ -13,6 +14,10 @@ app = Flask(__name__)
 
 # Configure CORS to allow requests from the specified origin
 cors = CORS(app, resources={r"/predict": {"origins": "http://127.0.0.1:5000"}})
+
+# model path
+relative_model_path = os.path.join('final_deployment', 'rnn_epoch73_loss0.19.pth')
+absolute_model_path = os.path.abspath(relative_model_path)
 
 # Initialize MediaPipe Pose solution
 mp_pose = mp.solutions.pose
@@ -78,7 +83,7 @@ def predict():
                 model = RNN()
 
                 # Load the pre-trained model weights
-                model.load_state_dict(torch.load('rnn_epoch73_loss0.19.pth', map_location=torch.device('cpu')))
+                model.load_state_dict(torch.load(absolute_model_path, map_location=torch.device('cpu')))
 
                 # Set the model to evaluation mode
                 model.eval()
