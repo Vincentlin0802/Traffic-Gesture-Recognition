@@ -145,7 +145,7 @@ Make sure you have all the necessary dependencies installed. If not, refer to th
 - Ensure the RNN model (`rnn_epoch73_loss0.19.pth`) is in the correct directory path as specified in the `python.py` script.
 
 ## Model Performance and Evaluation
-- Performance of RNN model with LSTM and 8 head Attention Mechanism has reach the result of **lowest 0.6 loss** and **highest 96.7% accuracy**, **average accuracy is about 80%**.
+- Performance of RNN model with LSTM and 8 head Attention Mechanism has reach the result of **lowest 0.06 loss** and **highest 96.7% accuracy**, **average accuracy is about 80%**.
 <p style="text-align: center;">
   <img src="readme_images/Model_performance.png" alt="Traffic Gesture Recognition" style="width: 400px;"/>
 </p>
