@@ -1,0 +1,56 @@
+
+body {
+    margin: 0; 
+    padding: 0; 
+    background: url('111.png') no-repeat center center fixed;
+    background-size: cover; 
+}
+
+.videoElement {
+    width: 1100px; 
+    height: 740px;
+    position: absolute;
+    top: calc(15.5vh);
+    right: calc(-1.5vw);
+}
+
+.resultContainer{
+    color: cyan;
+    font-size: 35px;
+    position: absolute;
+    bottom: calc(50vh);
+    left: calc(7vw); 
+}
+
+.canvas {
+    position: absolute;
+    top: calc(15.5vh);
+    right: calc(-1.5vw); 
+    display: none;
+}
+
+.startButton{
+    width: 400px; 
+    height: 150px;
+    position: absolute;
+    bottom: calc(5vh);
+    left: calc(7vw); 
+    cursor: pointer;
+}
+
+.startButton:hover {
+    filter: brightness(70%);
+  }
+
+.countdownGif {
+    width: 350px; 
+    height: 350px;
+    position: absolute;
+    bottom: calc(30vh);
+    left: calc(7vw); 
+    display: flex;
+}
+
+.hidden {
+    display: none;
+}

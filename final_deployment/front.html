@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="front.css">
+    <script defer src="script.js"></script>
+</head>
+<body onload="startCamera()">
+    <video class = "videoElement" id="videoElement" autoplay="autoplay"></video>
+    <canvas class = "canvas" id="canvas" width="1080" height="1080"></canvas>
+    <img class = "startButton" id = "startButton" src="button1.png" onclick="startSendingFrames()"/>
+    <div class = "resultContainer" id="resultContainer"></div>
+    <img class = "countdownGif hidden" src="time.gif" id="countdownGif" />
+    <audio id="countdownAudio" src="music.wav"></audio>
+</body>
+</html>
